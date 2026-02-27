@@ -3,56 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Обувная Фабрика - Главная</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ShoeFactory DB Dashboard</title>
+    <!-- Подключаем Bootstrap для красоты -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; margin-bottom: 20px; }
+        .header { background: #2c3e50; color: white; padding: 20px 0; margin-bottom: 30px; }
+        .status-badge { font-size: 0.9em; }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="brand">🏭 Обувная Фабрика</a>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="active">Главная</a></li>
-                <li><a href="materials.html">Материалы</a></li>
-                <li><a href="models.html">Модели</a></li>
-                <li><a href="production.html">Производство</a></li>
-                <li><a href="defects.html">Брак</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <main class="container">
-        <h1>📊 Панель управления фабрикой</h1>
+    <div class="header text-center">
+        <h1>👟 ShoeFactory DB Viewer</h1>
+        <p>Панель управления производством обуви</p>
+    </div>
+
+    <div class="container">
+        <!-- Навигация -->
+        <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-materials-tab" data-bs-toggle="pill" data-bs-target="#pills-materials" type="button">Материалы</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-models-tab" data-bs-toggle="pill" data-bs-target="#pills-models" type="button">Модели обуви</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-production-tab" data-bs-toggle="pill" data-bs-target="#pills-production" type="button">Производство</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-defects-tab" data-bs-toggle="pill" data-bs-target="#pills-defects" type="button">Брак</button>
+            </li>
+        </ul>
+
+        <!-- Контент -->
+        <div class="tab-content" id="pills-tabContent">
+            
+            <!-- Таблица Материалов -->
+            <div class="tab-pane fade show active" id="pills-materials">
+                <div class="card p-4">
+                    <h3>Склад материалов</h3>
+                    <table class="table table-hover mt-3">
+                        <thead class="table-dark">
+                            <tr><th>ID</th><th>Название</th><th>Тип</th><th>Остаток</th><th>Ед. изм.</th></tr>
+                        </thead>
+                        <tbody id="materials-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Таблица Моделей -->
+            <div class="tab-pane fade" id="pills-models">
+                <div class="card p-4">
+                    <h3>Каталог моделей</h3>
+                    <table class="table table-hover mt-3">
+                        <thead class="table-dark">
+                            <tr><th>ID</th><th>Модель</th><th>Категория</th><th>Цена</th><th>Год выпуска</th></tr>
+                        </thead>
+                        <tbody id="models-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Таблица Производства -->
+            <div class="tab-pane fade" id="pills-production">
+                <div class="card p-4">
+                    <h3>Журнал производства</h3>
+                    <table class="table table-hover mt-3">
+                        <thead class="table-dark">
+                            <tr><th>ID</th><th>Модель ID</th><th>Материал ID</th><th>Дата</th><th>Кол-во</th><th>Статус</th></tr>
+                        </thead>
+                        <tbody id="production-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Таблица Брака -->
+            <div class="tab-pane fade" id="pills-defects">
+                <div class="card p-4">
+                    <h3>Отчет по браку</h3>
+                    <table class="table table-hover mt-3">
+                        <thead class="table-dark">
+                            <tr><th>ID</th><th>Партия (Prod ID)</th><th>Тип дефекта</th><th>Кол-во</th><th>Описание</th></tr>
+                        </thead>
+                        <tbody id="defects-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ИМИТАЦИЯ ДАННЫХ ИЗ БАЗЫ (MOCK DATA)
+        // В реальном проекте здесь был бы fetch() запрос к API
         
-        <div class="stats-container">
-            <div class="stat-card stat-materials">
-                <h3 id="materialsCount">0</h3>
-                <p>Материалов на складе</p>
-            </div>
-            <div class="stat-card stat-models">
-                <h3 id="modelsCount">0</h3>
-                <p>Моделей обуви</p>
-            </div>
-            <div class="stat-card stat-production">
-                <h3 id="productionCount">0</h3>
-                <p>Производственных записей</p>
-            </div>
-            <div class="stat-card stat-defects">
-                <h3 id="defectsCount">0</h3>
-                <p>Записей о браке</p>
-            </div>
-        </div>
+        const dbData = {
+            materials: [
+                { id: 1, name: "Натуральная кожа", type: "Кожа", quantity: 500, unit: "кв.м" },
+                { id: 2, name: "Резиновая подошва", type: "Резина", quantity: 1200, unit: "шт" },
+                { id: 3, name: "Шнурки", type: "Текстиль", quantity: 5000, unit: "пар" }
+            ],
+            models: [
+                { id: 1, name: "Sport Runner X", category: "Спорт", price: 4500.00, year: 2023 },
+                { id: 2, name: "Classic Leather", category: "Классика", price: 8900.00, year: 2022 },
+                { id: 3, name: "Winter Boot", category: "Зима", price: 12000.00, year: 2024 }
+            ],
+            production: [
+                { id: 101, modelId: 1, materialId: 2, date: "2023-10-25 10:00", qty: 50, status: "Completed" },
+                { id: 102, modelId: 2, materialId: 1, date: "2023-10-26 14:30", qty: 20, status: "In Progress" },
+                { id: 103, modelId: 3, materialId: 1, date: "2023-10-27 09:15", qty: 100, status: "In Progress" }
+            ],
+            defects: [
+                { id: 1, prodId: 101, type: "Неровный шов", qty: 2, desc: "Партия 101, станок №3" },
+                { id: 2, prodId: 102, type: "Царапина", qty: 1, desc: "Повреждение кожи при крое" }
+            ]
+        };
 
-        <div class="welcome-section">
-            <h2>Добро пожаловать в систему управления!</h2>
-            <p>Выберите раздел в меню выше для просмотра подробной информации.</p>
-            <p class="db-info">📡 Подключение к БД: DESKTOPCHIK\MSSQLSERVER1</p>
-        </div>
-    </main>
+        // Функции отрисовки
+        function renderTable(data, elementId) {
+            const tbody = document.getElementById(elementId);
+            tbody.innerHTML = "";
+            data.forEach(row => {
+                let tr = document.createElement('tr');
+                // Динамически создаем ячейки в зависимости от типа данных
+                if(elementId === 'materials-body') {
+                    tr.innerHTML = `<td>${row.id}</td><td>${row.name}</td><td>${row.type}</td><td>${row.quantity}</td><td>${row.unit}</td>`;
+                } else if(elementId === 'models-body') {
+                    tr.innerHTML = `<td>${row.id}</td><td>${row.name}</td><td>${row.category}</td><td>${row.price} ₽</td><td>${row.year}</td>`;
+                } else if(elementId === 'production-body') {
+                    let badgeClass = row.status === 'Completed' ? 'bg-success' : 'bg-warning text-dark';
+                    tr.innerHTML = `<td>${row.id}</td><td>${row.modelId}</td><td>${row.materialId}</td><td>${row.date}</td><td>${row.qty}</td><td><span class="badge ${badgeClass}">${row.status}</span></td>`;
+                } else if(elementId === 'defects-body') {
+                    tr.innerHTML = `<td>${row.id}</td><td>${row.prodId}</td><td>${row.type}</td><td>${row.qty}</td><td>${row.desc}</td>`;
+                }
+                tbody.appendChild(tr);
+            });
+        }
 
-    <footer>
-        <p>&copy; 2026 Система управления обувной фабрикой</p>
-    </footer>
-
-    <script src="script.js"></script>
+        // Запуск при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable(dbData.materials, 'materials-body');
+            renderTable(dbData.models, 'models-body');
+            renderTable(dbData.production, 'production-body');
+            renderTable(dbData.defects, 'defects-body');
+        });
+    </script>
 </body>
 </html>
