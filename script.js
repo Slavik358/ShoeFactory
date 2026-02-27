@@ -1,0 +1,125 @@
+const materialsData = [
+    { id: 1, name: "Кожа натуральная", type: "Кожа", quantity: 500, unit: "м²" },
+    { id: 2, name: "Резина", type: "Полимеры", quantity: 1200, unit: "кг" },
+    { id: 3, name: "Ткань хлопок", type: "Ткань", quantity: 800, unit: "м" },
+    { id: 4, name: "Нитки полиэстер", type: "Фурнитура", quantity: 5000, unit: "м" },
+    { id: 5, name: "Клей обувной", type: "Химия", quantity: 200, unit: "л" }
+];
+
+const modelsData = [
+    { id: 1, modelName: "Кроссовки Sport", category: "Спорт", basePrice: 5990, releaseYear: 2025 },
+    { id: 2, modelName: "Ботинки Classic", category: "Классика", basePrice: 8990, releaseYear: 2024 },
+    { id: 3, modelName: "Туфли Elegance", category: "Официальная", basePrice: 7490, releaseYear: 2025 },
+    { id: 4, modelName: "Кеды Urban", category: "Повседневная", basePrice: 4490, releaseYear: 2026 },
+    { id: 5, modelName: "Сапоги Winter", category: "Зимняя", basePrice: 12990, releaseYear: 2025 }
+];
+
+const productionData = [
+    { id: 1, model: "Кроссовки Sport", material: "Кожа натуральная", date: "25.02.2026", quantity: 100, status: "completed" },
+    { id: 2, model: "Ботинки Classic", material: "Кожа натуральная", date: "26.02.2026", quantity: 50, status: "inprogress" },
+    { id: 3, model: "Туфли Elegance", material: "Ткань хлопок", date: "27.02.2026", quantity: 75, status: "pending" },
+    { id: 4, model: "Кеды Urban", material: "Резина", date: "24.02.2026", quantity: 150, status: "completed" },
+    { id: 5, model: "Сапоги Winter", material: "Кожа натуральная", date: "23.02.2026", quantity: 30, status: "onhold" }
+];
+
+const defectsData = [
+    { id: 1, production: "Кроссовки Sport | 25.02.2026", defectType: "Дефект шва", quantity: 5, description: "Неровная строчка на боковом шве" },
+    { id: 2, production: "Ботинки Classic | 26.02.2026", defectType: "Повреждение материала", quantity: 3, description: "Царапина на коже" },
+    { id: 3, production: "Туфли Elegance | 27.02.2026", defectType: "Клей", quantity: 2, description: "Излишки клея на подошве" }
+];
+
+const statusLabels = {
+    "inprogress": "В процессе",
+    "completed": "Завершено",
+    "pending": "Ожидает",
+    "onhold": "Приостановлено",
+    "cancelled": "Отменено"
+};
+
+function loadMaterials() {
+    const table = document.getElementById("materialsTable");
+    if (!table) return;
+    
+    materialsData.forEach(item => {
+        const row = `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.type}</td>
+                <td>${item.quantity}</td>
+                <td>${item.unit}</td>
+            </tr>
+        `;
+        table.innerHTML += row;
+    });
+}
+
+function loadModels() {
+    const table = document.getElementById("modelsTable");
+    if (!table) return;
+    
+    modelsData.forEach(item => {
+        const row = `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.modelName}</td>
+                <td>${item.category}</td>
+                <td>${item.basePrice.toLocaleString("ru-RU")} ₽</td>
+                <td>${item.releaseYear}</td>
+            </tr>
+        `;
+        table.innerHTML += row;
+    });
+}
+
+function loadProduction() {
+    const table = document.getElementById("productionTable");
+    if (!table) return;
+    
+    productionData.forEach(item => {
+        const row = `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.model}</td>
+                <td>${item.material}</td>
+                <td>${item.date}</td>
+                <td>${item.quantity}</td>
+                <td><span class="status-badge status-${item.status}">${statusLabels[item.status]}</span></td>
+            </tr>
+        `;
+        table.innerHTML += row;
+    });
+}
+
+function loadDefects() {
+    const table = document.getElementById("defectsTable");
+    if (!table) return;
+    
+    defectsData.forEach(item => {
+        const row = `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.production}</td>
+                <td>${item.defectType}</td>
+                <td>${item.quantity}</td>
+                <td>${item.description}</td>
+            </tr>
+        `;
+        table.innerHTML += row;
+    });
+}
+
+function loadStatistics() {
+    document.getElementById("materialsCount").textContent = materialsData.length;
+    document.getElementById("modelsCount").textContent = modelsData.length;
+    document.getElementById("productionCount").textContent = productionData.length;
+    document.getElementById("defectsCount").textContent = defectsData.length;
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    loadStatistics();
+    loadMaterials();
+    loadModels();
+    loadProduction();
+    loadDefects();
+});
